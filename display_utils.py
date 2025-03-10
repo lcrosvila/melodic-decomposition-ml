@@ -2,6 +2,7 @@ from IPython.display import SVG
 import subprocess
 import tempfile
 import os
+from IPython.display import HTML, Javascript, display
 
 def display_abc(abc_string):
     """
@@ -159,3 +160,22 @@ fs.writeFileSync('output.svg', svgElement);
             print("Error converting ABC to SVG:")
             print(e.stderr.decode())
             return None
+    
+def display_abc(abc_notation, container_id=None):
+    if container_id is None:
+        import uuid
+        container_id = f"abcjs-container-{uuid.uuid4().hex[:8]}"
+    
+    display(HTML(f"<div id='{container_id}'></div>"))
+    
+    display(Javascript(f"""
+    ABCJS.renderAbc(
+        "{container_id}",
+        `{abc_notation}`,
+        {{
+            responsive: "resize",
+            add_classes: true,
+            staffwidth: 740
+        }}
+    );
+    """))
